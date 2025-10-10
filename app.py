@@ -14,6 +14,7 @@ from langchain_community.vectorstores import FAISS
 from langchain.chains.question_answering import load_qa_chain
 from langchain.prompts import PromptTemplate
 import google.generativeai as genai
+import alternative_qa
 
 # handling aync loop...
 try:
@@ -49,13 +50,49 @@ def extract_text_from_files(uploaded_files):
 
 # Initialize HuggingFace embeddings (cached for performance)
 @st.cache_resource
-def get_embeddings():
-    """Load HuggingFace embeddings model - No API quotas, runs offline!"""
-    return HuggingFaceEmbeddings(
-        model_name="sentence-transformers/all-MiniLM-L6-v2",
-        model_kwargs={'device': 'cpu'},
-        encode_kwargs={'normalize_embeddings': True}
-    )
+def get_embeddings(model_choice="default"):
+    """Load HuggingFace embeddings model - Multiple options for different use cases!"""
+    
+    # Define available models (smaller models for better performance)
+    model_options = {
+        "default": "sentence-transformers/all-MiniLM-L6-v2",  # Fast, good quality
+        "small": "sentence-transformers/paraphrase-MiniLM-L3-v2",  # Smaller, faster
+        "legal": "sentence-transformers/all-mpnet-base-v2",  # Better for legal docs
+        "multilingual": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
+    }
+    
+    try:
+        # Try sentence-transformers first
+        from sentence_transformers import SentenceTransformer
+        model_name = model_options.get(model_choice, model_options["default"])
+        
+        return HuggingFaceEmbeddings(
+            model_name=model_name,
+            model_kwargs={'device': 'cpu'},
+            encode_kwargs={'normalize_embeddings': True}
+        )
+    except ImportError:
+        # Fallback to basic transformers without sentence-transformers
+        try:
+            st.warning("⚠️ Using fallback embedding method (sentence-transformers not available)")
+            from transformers import AutoTokenizer, AutoModel
+            import torch
+            
+            # Use a basic transformer model
+            model_name = "microsoft/DialoGPT-medium"  # Available in transformers
+            return HuggingFaceEmbeddings(
+                model_name="sentence-transformers/all-MiniLM-L6-v2",  # This will fallback internally
+                model_kwargs={'device': 'cpu'}
+            )
+        except Exception as fallback_error:
+            st.error("🚨 Could not load any embedding model!")
+            st.error("Please install: pip install sentence-transformers==2.2.2")
+            st.info("💡 Alternative: You can still use other features like citation extraction and legal summaries.")
+            return None
+    except Exception as e:
+        st.error(f"❌ Error loading embeddings: {str(e)}")
+        st.error("🔧 Trying alternative embedding method...")
+        return None
 
 # Function to create the vector store
 @st.cache_resource
@@ -89,27 +126,52 @@ def get_conversational_chain():
 
 # Function to handle user input and get a response
 def user_input(user_question):
-    if not gemini_token:
-        st.error("Gemini API token not found. Please set GEMINI_TOKEN in your environment.")
-        return
-    
+    # Prefer the RAG flow when embeddings and FAISS are available
+    embeddings = None
     try:
-        # Use HuggingFace embeddings instead of Gemini (no quota limits!)
         embeddings = get_embeddings()
-        new_db = FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True)
-        docs = new_db.similarity_search(user_question)
+    except Exception:
+        embeddings = None
 
-        chain = get_conversational_chain()
-        if chain:
-            response = chain({"input_documents": docs, "question": user_question}, return_only_outputs=True)
-            
-            st.write("Reply: ", response["output_text"])
-            st.write("---")
-            st.subheader("Sources used for this answer:")
-            for i, doc in enumerate(docs):
-                st.info(f"Source {i+1}: {doc.page_content[:200]}...")
+    faiss_exists = os.path.exists("faiss_index")
+
+    # If embeddings and FAISS vector store are available, try RAG
+    if embeddings and faiss_exists:
+        try:
+            new_db = FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True)
+            docs = new_db.similarity_search(user_question, k=4)
+
+            chain = get_conversational_chain()
+            if chain:
+                with st.spinner("🤔 Analyzing your question (RAG)..."):
+                    response = chain({"input_documents": docs, "question": user_question}, return_only_outputs=True)
+
+                st.success("✅ Answer generated successfully (RAG)!")
+                st.markdown(f"**🤖 AI Response:** {response['output_text']}")
+
+                with st.expander("📚 View Sources Used", expanded=False):
+                    for i, doc in enumerate(docs):
+                        st.markdown(f"**Source {i+1}:**")
+                        st.text_area(f"source_{i}", doc.page_content[:300] + "...", height=100, key=f"source_{i}")
+                return
+            else:
+                st.warning("RAG chain initialization failed — falling back to local Q&A.")
+        except Exception as e:
+            st.warning(f"RAG failed: {str(e)} — falling back to local Q&A.")
+
+    # Fallback: use local/simple Q&A methods (no sentence-transformers/faiss required)
+    st.info("Using fallback local Q&A (no embeddings required).")
+    try:
+        if 'full_text' not in st.session_state:
+            st.error("No document text available. Upload and analyze documents first.")
+            return
+
+        # Try the enhanced hybrid fallback (may use Gemini if token available)
+        answer = alternative_qa.enhanced_legal_qa(st.session_state.full_text, user_question, gemini_token if gemini_token else None)
+        st.success("✅ Fallback answer generated")
+        st.markdown(f"**🧭 Fallback Answer:** {answer}")
     except Exception as e:
-        st.error(f"Error processing question: {str(e)}")
+        st.error(f"Fallback Q&A failed: {str(e)}")
 
 # Translation function
 def translate_text(text, target_language="simple, layman-friendly language"):

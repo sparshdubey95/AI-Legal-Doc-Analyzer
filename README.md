@@ -7,9 +7,7 @@ A comprehensive AI-powered legal document analyzer with RAG (Retrieval-Augmented
 - 🔍 **Multi-format Support**: Upload PDF and DOCX files
 - 📄 **Smart Summarization**: Generate structured summaries using BART
 - 💬 **AI Chat**: Ask questions about your documents using Gemini Pro
-- 🎙️ **Voice Input**: Voice-to-text question input
-- 🔊 **Audio Responses**: Text-to-speech for answers
-- 📚 **Source Citations**: View source chunks for each answer
+-  **Source Citations**: View source chunks for each answer
 - 🌐 **Translation**: Simplify legal jargon for better understanding
 - 📱 **Multi-document**: Analyze multiple documents simultaneously
 
@@ -28,4 +26,3 @@ This app is ready for deployment on Streamlit Cloud. Make sure to add your `GEMI
 
 - Python 3.8+
 - Gemini API key
-- Microphone access (for voice features)

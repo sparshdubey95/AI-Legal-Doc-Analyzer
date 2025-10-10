@@ -1,0 +1,94 @@
+SUPREME COURT OF CALIFORNIA
+
+CASE NO. S123456
+
+TECHNOLOGY SOLUTIONS INC.,
+                                                    Plaintiff and Appellant,
+v.
+
+DIGITAL INNOVATIONS CORP.,
+                                                    Defendant and Respondent.
+
+OPINION
+
+Filed: March 8, 2024
+
+JUSTICE WILLIAMS delivered the opinion of the Court.
+
+I. FACTUAL BACKGROUND
+
+This case arises from a dispute over a software development contract between Technology Solutions Inc. ("TSI") and Digital Innovations Corp. ("DIC"). On June 1, 2022, the parties entered into a Software Development Agreement whereby TSI agreed to develop a custom inventory management system for DIC's retail operations.
+
+The contract contained the following key provisions:
+- Development timeline: 12 months from contract execution
+- Total contract value: $750,000
+- Payment schedule: 25% upfront, 50% at milestone completion, 25% upon final delivery
+- Intellectual property rights: All custom code to be owned by DIC upon final payment
+
+II. PROCEDURAL HISTORY
+
+On September 15, 2023, DIC filed a complaint alleging breach of contract, seeking damages in the amount of $200,000 for delays and additional costs incurred due to TSI's failure to deliver the software on schedule. TSI filed a cross-complaint alleging that DIC failed to provide necessary specifications and made excessive change requests that delayed the project.
+
+The trial court granted summary judgment in favor of DIC, finding that TSI materially breached the contract by failing to deliver the completed software within the agreed timeline. TSI appeals this decision.
+
+III. LEGAL ANALYSIS
+
+A. Standard of Review
+
+We review a grant of summary judgment de novo. See Section 437c of the Code of Civil Procedure. Summary judgment is proper when there are no triable issues of material fact and the moving party is entitled to judgment as a matter of law.
+
+B. Breach of Contract Elements
+
+To establish a breach of contract claim under California law, a plaintiff must prove: (1) the existence of a contract; (2) plaintiff's performance or excuse for nonperformance; (3) defendant's breach; and (4) damages resulting from the breach. See Reichert v. General Insurance Co. (1968) 68 Cal.2d 822, 830.
+
+C. Material Breach Analysis
+
+The trial court correctly found that time was of the essence in this contract. The Agreement specifically stated that "timely delivery is critical to DIC's business operations and any delay beyond the agreed timeline shall constitute a material breach."
+
+TSI argues that DIC's failure to provide timely feedback and excessive change requests excused its performance. However, the record shows that DIC provided all requested specifications within the timeframes set forth in Section 3.2 of the Agreement.
+
+D. Damages
+
+The trial court awarded DIC $175,000 in damages, consisting of:
+- Additional consulting fees: $125,000
+- Extended project management costs: $35,000
+- Lost business opportunities: $15,000
+
+These damages were properly calculated under Civil Code Section 3300, which provides that damages for breach of contract should put the non-breaching party in the position they would have been in had the contract been performed.
+
+IV. CONCLUSION
+
+The trial court properly granted summary judgment in favor of DIC. TSI materially breached the Software Development Agreement by failing to deliver the completed software within the contractual timeline. The evidence shows that DIC performed all of its obligations under the contract and that TSI's delay was not excused by DIC's conduct.
+
+The judgment of the trial court is AFFIRMED.
+
+CONCURRING OPINION by JUSTICE MARTINEZ:
+
+I concur in the majority's holding but write separately to emphasize the importance of clear contractual language regarding project milestones in software development agreements. As technology projects become increasingly complex, parties should consider incorporating detailed specification requirements and change order procedures to avoid disputes of this nature.
+
+DISSENTING OPINION by JUSTICE THOMPSON:
+
+I respectfully dissent. The majority fails to adequately consider the dynamic nature of software development projects. The record contains substantial evidence that DIC's numerous change requests fundamentally altered the scope of work, thereby excusing TSI's performance under the doctrine of substantial compliance.
+
+Under Section 1511 of the Civil Code, when a party prevents performance of a condition, the condition is excused. Here, DIC's conduct prevented TSI from meeting the original timeline, and the trial court erred in not recognizing this defense.
+
+Furthermore, the damages award lacks sufficient evidentiary support. The claimed lost business opportunities are speculative and do not meet the certainty requirement established in Bionghi v. Metropolitan Water District (1999) 70 Cal.App.4th 1358.
+
+I would reverse the judgment and remand for further proceedings.
+
+IT IS SO ORDERED.
+
+Chief Justice Rodriguez
+Justice Williams
+Justice Martinez
+Justice Thompson
+Justice Lee
+Justice Patel
+Justice Adams
+
+CERTIFICATE OF SERVICE
+
+I hereby certify that a true and correct copy of the foregoing Opinion was served upon all parties by electronic filing through the Court's electronic filing system on March 8, 2024.
+
+/s/ Sarah Chen
+Clerk of the Supreme Court of California
