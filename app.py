@@ -25,8 +25,15 @@ except RuntimeError:
 # loading environment variables from .env file 
 load_dotenv()
 
-# fetch token
+# fetch token - SECURE METHOD
 gemini_token = os.getenv("GEMINI_TOKEN")
+# Fallback to Streamlit secrets for cloud deployment
+if not gemini_token and hasattr(st, 'secrets'):
+    try:
+        gemini_token = st.secrets["GEMINI_TOKEN"]
+    except:
+        pass
+
 if gemini_token:
     genai.configure(api_key=gemini_token)
 
@@ -262,124 +269,168 @@ Use professional legal language appropriate for lawyers and legal professionals.
 # styling using HTML/CSS...
 st.set_page_config(page_title="AI Legal Research Assistant", page_icon="⚖️", layout="wide")
 
-# Custom CSS for a professional legal look
+# CRITICAL UI FIX: Force proper contrast and readability
 st.markdown("""
-    <style>
-    /* Main app background */
+<style>
+    /* Force proper dark theme with high contrast */
     .stApp {
-        background-color: #f5f7fa;
+        background-color: #0E1117 !important;
+        color: #FAFAFA !important;
     }
-
-    /* Main content area */
+    
     .main .block-container {
+        background-color: #0E1117 !important;
+        color: #FAFAFA !important;
         padding-top: 2rem;
-        padding-bottom: 2rem;
         max-width: 1400px;
     }
-
-    /* Title styling */
-    h1 {
+    
+    /* Ensure all text is visible */
+    h1, h2, h3, h4, h5, h6 {
+        color: #FAFAFA !important;
         font-family: 'Georgia', serif;
-        color: #1f4e79;
+    }
+    
+    .stMarkdown, .stText, p, div, span, label {
+        color: #FAFAFA !important;
+    }
+    
+    /* Fix button styling */
+    .stButton > button {
+        background-color: #FF4B4B !important;
+        color: white !important;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        padding: 12px 28px;
+        transition: all 0.3s ease;
+    }
+    
+    .stButton > button:hover {
+        background-color: #FF6B6B !important;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(255,75,75,0.3);
+    }
+    
+    /* Fix file uploader */
+    .stFileUploader {
+        background-color: #262730 !important;
+        border: 2px dashed #FF4B4B !important;
+        border-radius: 8px;
+        padding: 1rem;
+    }
+    
+    .stFileUploader label {
+        color: #FAFAFA !important;
+    }
+    
+    /* Fix text input */
+    .stTextInput > div > div > input {
+        background-color: #262730 !important;
+        color: #FAFAFA !important;
+        border: 2px solid #4A5568 !important;
+        border-radius: 8px;
+    }
+    
+    /* Fix expanders */
+    .streamlit-expanderHeader {
+        background-color: #262730 !important;
+        color: #FAFAFA !important;
+        border-radius: 8px;
+        font-weight: 600;
+    }
+    
+    /* Fix success/info boxes */
+    .stSuccess {
+        background-color: #065F46 !important;
+        color: #FAFAFA !important;
+        border-left: 4px solid #10B981;
+    }
+    
+    .stInfo {
+        background-color: #1E3A8A !important;
+        color: #FAFAFA !important;
+        border-left: 4px solid #3B82F6;
+    }
+    
+    .stWarning {
+        background-color: #92400E !important;
+        color: #FAFAFA !important;
+        border-left: 4px solid #F59E0B;
+    }
+    
+    .stError {
+        background-color: #991B1B !important;
+        color: #FAFAFA !important;
+        border-left: 4px solid #EF4444;
+    }
+</style>
+""", unsafe_allow_html=True)
+
+# Original professional styling (enhanced with contrast fixes)
+st.markdown("""
+    <style>
+
+    /* Enhanced professional styling for light/dark compatibility */
+    
+    /* Title styling - Enhanced contrast */
+    h1 {
+        font-family: 'Georgia', serif !important;
+        color: #FAFAFA !important;
         text-align: center;
         font-weight: 700;
         font-size: 2.5rem;
         margin-bottom: 1rem;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
     }
 
-    /* Section headers */
+    /* Section headers - Enhanced visibility */
     h2, h3 {
-        color: #2c5282;
-        border-bottom: 2px solid #2c5282;
+        color: #FAFAFA !important;
+        border-bottom: 2px solid #FF4B4B !important;
         padding-bottom: 0.5rem;
         margin-top: 1.5rem;
     }
 
-    /* Subheader/instruction styling */
-    .stMarkdown p {
-        font-family: 'Segoe UI', sans-serif;
+    /* All text elements - Force visibility */
+    .stMarkdown p, .stText, p, div, span, label, .stMarkdown {
+        font-family: 'Segoe UI', sans-serif !important;
         font-size: 1.05rem;
-        color: #2d3748;
+        color: #FAFAFA !important;
     }
 
-    /* File uploader styling */
-    .stFileUploader {
-        border: 2px dashed #2c5282;
-        border-radius: 10px;
-        background-color: #ffffff;
-        padding: 20px;
-    }
-
-    /* Button styling */
-    .stButton>button {
-        border: none;
-        border-radius: 8px;
-        color: #ffffff;
-        background: linear-gradient(135deg, #2c5282 0%, #1f4e79 100%);
-        padding: 12px 28px;
-        font-weight: 600;
-        font-size: 1rem;
-        transition: all 0.3s ease-in-out;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    .stButton>button:hover {
-        background: linear-gradient(135deg, #1f4e79 0%, #2c5282 100%);
-        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-        transform: translateY(-1px);
-    }
-
-    /* Citation box styling */
+    /* Enhanced citation and content styling */
     .citation-box {
-        background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
-        border-left: 4px solid #3182ce;
+        background: linear-gradient(135deg, #262730 0%, #1A202C 100%) !important;
+        border-left: 4px solid #FF4B4B !important;
         padding: 1rem 1.5rem;
         margin: 1rem 0;
         border-radius: 6px;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        box-shadow: 0 2px 8px rgba(255,75,75,0.2);
+        color: #FAFAFA !important;
     }
 
     /* Legal summary styling */
     .legal-summary {
-        background: linear-gradient(135deg, #edf2f7 0%, #e2e8f0 100%);
+        background: linear-gradient(135deg, #262730 0%, #1A202C 100%) !important;
         padding: 1.5rem;
         border-radius: 10px;
-        border: 1px solid #cbd5e0;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-    }
-
-    /* Info/success boxes */
-    .stSuccess {
-        background-color: #c6f6d5;
-        border-left: 4px solid #38a169;
-        border-radius: 6px;
-        padding: 1rem;
-    }
-
-    .stInfo {
-        background-color: #bee3f8;
-        border-left: 4px solid #3182ce;
-        border-radius: 6px;
-        padding: 1rem;
-    }
-
-    /* Expander styling */
-    .streamlit-expanderHeader {
-        background-color: #edf2f7;
-        border-radius: 8px;
-        font-weight: 600;
-        color: #2c5282;
-    }
-
-    /* Text input styling */
-    .stTextInput>div>div>input {
-        border-radius: 8px;
-        border: 2px solid #cbd5e0;
-        padding: 10px;
+        border: 1px solid #4A5568 !important;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        color: #FAFAFA !important;
     }
     
-    .stTextInput>div>div>input:focus {
-        border-color: #3182ce;
-        box-shadow: 0 0 0 1px #3182ce;
+    /* Sidebar styling */
+    .css-1d391kg {
+        background-color: #1A202C !important;
+    }
+    
+    /* Metric styling */
+    .css-1xarl3l {
+        background-color: #262730 !important;
+        color: #FAFAFA !important;
+        border-radius: 8px;
+        padding: 1rem;
     }
 
     /* Main header class */

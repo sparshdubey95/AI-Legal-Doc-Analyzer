@@ -1,3 +1,19 @@
+# Environment variables (NEVER COMMIT)
+.env
+.env.local
+.env.production
+*.env
+
+# API Keys and secrets (CRITICAL SECURITY)
+**/secrets/
+**/*secret*
+**/*key*
+**/api_keys/
+
+# Streamlit secrets
+.streamlit/secrets.toml
+
+# Python
 __pycache__/
 *.pyc
 *.pyo
@@ -5,14 +21,24 @@ __pycache__/
 .Python
 env/
 venv/
-.env
 .venv
 *.log
+
+# FAISS index files
 faiss_index/
+
+# Temporary files
 *.mp3
 temp/
-.streamlit/secrets.toml
-.env
-*.env
-.env.local
-.env.production
+*.tmp
+*.temp
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
